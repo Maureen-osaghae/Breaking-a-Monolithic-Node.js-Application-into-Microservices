@@ -376,6 +376,77 @@ Retrieve information about 4th user: In the right terminal tab, enter the follow
 
 <img width="627" alt="image" src="https://github.com/user-attachments/assets/9692a524-bde4-4cd4-89ce-5b8e590309ed" />
 
+Retrieve threads: In the right terminal tab, enter the following command: 
+
+      curl localhost:3000/api/threads
+
+<img width="797" alt="image" src="https://github.com/user-attachments/assets/bdce18ec-e695-4fb5-8fdb-67c71f949729" />
+
+Retrieve thread 1 : In the right terminal tab, enter the following command:
+
+      curl localhost:3000/api/posts/in-thread/1
+<img width="805" alt="image" src="https://github.com/user-attachments/assets/0417fbbf-5513-4ff8-9320-c46ff1f2146b" />
+
+Now you stop the Node.js server. In the left terminal tab, press Ctrl+C to shut down the server process. You have validated that the application responds properly to RESTful GET requests and can now proceed to containerize it.
+
+<img width="554" alt="image" src="https://github.com/user-attachments/assets/d72321a3-7bd1-4da7-bdba-08cd8d794904" />
+
+<h2>Task 3: Containerizing the monolith for Amazon ECS</h2>
+
+Containers wrap application code in a unit of deployment that captures a snapshot of the code and its dependencies. They can help ensure that applications deploy quickly, reliably, and consistently regardless of the deployment environment. In this task, you build a container image for the monolithic message board application and push it to Amazon Elastic Container Registry (Amazon ECR). These steps are in preparation for deploying the application to Amazon ECS.
+
+Specifically, you perform the following steps:
+
+✅ Prepare the application for Docker containerization.
+
+✅ Provision a repository.
+      
+✅ Build and push the Docker image to the repository.
+
+<h3>Task 3.1: Preparing the application for Docker containerization</h3>
+
+To put the message board application into a Docker container, you need to make the following changes to the application:
+    
+•  Remove the use of the Node.js cluster feature, and convert the application to a single process design. 
+      
+With Docker containers, the goal is to run a single process for each container rather than a cluster of processes.
+
+•  Create a Docker file for the application. This file is a build script that contains instructions on how to build a container image for the application.
+
+The 2-containerized-monolith folder of your AWS Cloud9 environment includes a container-ready version of the application. In this task, you review the files so that you understand the changes that were made to prepare the application for containerization. In the left pane, expand the 2-containerized-monolith folder, and double-click package.json to open it in an editor tab. 
+
+<img width="482" alt="image" src="https://github.com/user-attachments/assets/4db89db2-2e8f-48bd-894d-8c268c59211f" />
+
+Notice in line 7 that the entry point into the application has been changed from index.js to server.js. The index.js file is no longer present in the application folder because it contains the initialization logic for the Node.js cluster feature, which you are no longer using. 
+
+<img width="551" alt="image" src="https://github.com/user-attachments/assets/fb43bc24-3cb3-4e26-b102-78e189b59822" />
+
+In the left pane, in the 2-containerized-monolith folder, double-click server.js to open it in an editor tab. The only difference between this object and the non-containerized version is the addition of line 54, which prints the message "Worker started" when the application is first started.
+
+<img width="663" alt="image" src="https://github.com/user-attachments/assets/e8b14c14-2f1d-4372-a9d5-432dfabd14ad" />
+
+In the left pane, in the 2-containerized-monolith folder, double-click Dockerfile to open it in an editor tab. This file contains the instructions on how to build the container image for the application.
+
+<img width="594" alt="image" src="https://github.com/user-attachments/assets/06bf8847-97de-4924-a665-3dce9c83da41" />
+
+Understand the following:
+<ol>
+<li>Line 1: The base image on which the container image is to be built is alpine-node, which is a Node.js image.
+<li>Line 3: This line sets the working directory of the filesystem on the image to /srv.</li>
+<li>Line 4: This line adds the contents of the 2-containerized-monolith folder (the application folder) to the current working directory of the file system of the image (set in the previous line).</li>
+<li>Line 5: This line invokes the npm install command to install all of the application's library dependencies declared in the package.json file.</li>
+<li>Line 7: This line informs Docker that the container listens on port 3000 at runtime.</li>
+<li>Line 8: This line asks Docker to run the node server.js command, which starts the application when the image is started.</li>
+</ol>
+
+
+
+
+
+
+
+
+
 
 
 
