@@ -319,6 +319,21 @@ Lines 16–19: These lines handle each request to the application by invoking th
 
 <img width="504" alt="image" src="https://github.com/user-attachments/assets/61fc1e42-e195-41df-89e4-5b876b32ffcb" />
 
+Lastly, you review the code for the server.js object. In the left pane, double-click server.js to open it in an editor tab. Use the comments provided in the code to facilitate your understanding of the logic. In particular, notice the following: 
+       
+Line 3: This line imports the JSON object (db.json) that simulates the database.
+
+<img width="670" alt="image" src="https://github.com/user-attachments/assets/5b137244-d2d8-47a6-afa6-c09dce1b4f1c" />
+
+Lines 6–11: These lines define a generator function that gets run for every request. Its purpose is to print a line containing the HTTP method, resource path URL, and elapsed time for each request that is processed.
+
+<img width="577" alt="image" src="https://github.com/user-attachments/assets/059bc13f-e680-4eaf-b885-6683ae694f74" />
+
+Lines 13–47: These lines define the application's RESTful API methods and their implementation. Specifically, the application can respond to the following RESTful calls:
+
+<img width="553" alt="image" src="https://github.com/user-attachments/assets/4313986a-c95c-4c0b-88de-6f176023f9dd" />
+
+
 
 
 
