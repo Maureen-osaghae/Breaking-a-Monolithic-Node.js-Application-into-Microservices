@@ -439,6 +439,25 @@ Understand the following:
 <li>Line 8: This line asks Docker to run the node server.js command, which starts the application when the image is started.</li>
 </ol>
 
+Now that you understand how the container image for the application will be built, you look at where to put the image once it is built.
+
+<h3>Task 3.2: Provisioning the repository</h3>
+
+Docker container images are intended to be stored in a repository for sharing, version control, and convenient management purposes. Developers can use the Amazon ECR service to store, manage, and deploy Docker container images. In addition, Amazon ECR is integrated with Amazon ECS, allowing Amazon ECS to pull container images directly for production deployments.
+In this sub-task, you create a repository in Amazon ECR to house the container image for the message board application.
+
+On the AWS Management Console, in the search box, enter and choose Elastic Container Registry. In the Create a repository section, choose Get Started.  If you are shown the options menu under the Repositories menu, choose hyperlink Private repositores
+
+For the Repository name enter mb-repo
+       
+Note: Ensure that under Visibility settings, Private is chosen.
+
+Choose Create repository.
+       
+A message is displayed at the top of the page indicating that the repository was successfully created.
+
+<img width="959" alt="image" src="https://github.com/user-attachments/assets/5740fe18-b7be-4284-a758-ed8cf896789b" />
+
 
 
 
