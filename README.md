@@ -333,6 +333,57 @@ Lines 13–47: These lines define the application's RESTful API methods and thei
 
 <img width="553" alt="image" src="https://github.com/user-attachments/assets/4313986a-c95c-4c0b-88de-6f176023f9dd" />
 
+<ol>
+<li>GET /api/users returns the collection of users in the database.</li>
+<li>GET /api/users/:userId returns the information for the user identified by :userId. </li>
+<li>GET /api/threads returns the collection of threads in the database.</li>
+<li>GET /api/threads/:threadId returns the information for the thread identified by :threadId.</li>
+<li>GET /api/posts/in-thread/:threadId returns the collection of post messages for the thread identified by :threadId.</li>
+<li>GET /api/posts/by-user/:userId returns the collection of post messages for the user identified by :userId.</li>
+<li>GET /api/ returns the message "API ready to receive requests."</li>
+<li>GET / returns the message "Ready to receive requests."</li>
+</ol>
+
+Line 52: This line defines the port number on which the application is listening for requests.
+
+<h2>Task 2.3: Running the application</h2>
+In this task, you start the Node.js server and run the message board application. You then test some of its RESTful API methods. In the terminal tab, to start the Node.js server and the application, enter the following command:
+       
+       npm start
+
+<img width="446" alt="image" src="https://github.com/user-attachments/assets/0d4bea4c-1294-447e-8236-a651db16f88e" />
+
+The server is started, and the application's entry point, index.js, is started. The first time it is invoked, index.js creates two cluster threads—Leader and Worker—to process requests.
+Next, you need to keep the current terminal session active and open a second terminal tab to test the application's RESTful API.
+
+In the bottom pane, choose (+), and choose New Terminal to open a new terminal tab. You now have two terminals in which you can enter commands. In the right terminal tab, to retrieve the /api/users resource, enter the following command:
+
+      curl localhost:3000/api/users
+      
+The RESTful invocation returns a JSON object containing the list of users in the message board database. 
+
+<img width="955" alt="image" src="https://github.com/user-attachments/assets/b4bfaa9e-1332-4942-8054-5227de1b0677" />
+
+Choose the left terminal tab. You see the message that is output from server.js indicating that it has processed a GET method request on the resource identified by the path /api/users. The request took 4 milliseconds to process. 
+
+<img width="700" alt="image" src="https://github.com/user-attachments/assets/6d58cda0-82ab-4899-9193-8310d13301b3" />
+
+Similarly, you retrieve information about threads, posts etc and observe the output and the messages in left terminal tab. 
+
+Retrieve information about 4th user: In the right terminal tab, enter the following command:
+
+      curl localhost:3000/api/users/4
+
+<img width="627" alt="image" src="https://github.com/user-attachments/assets/9692a524-bde4-4cd4-89ce-5b8e590309ed" />
+
+
+
+
+
+
+
+
+
 
 
 
