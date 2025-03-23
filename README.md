@@ -458,6 +458,94 @@ A message is displayed at the top of the page indicating that the repository was
 
 <img width="959" alt="image" src="https://github.com/user-attachments/assets/5740fe18-b7be-4284-a758-ed8cf896789b" />
 
+<h2>Task 3.3: Building and pushing the Docker image</h2>
+
+You are now ready to build the container image for the application and push it to the Amazon ECR repository that you just created.
+One of the useful features of the Amazon ECR console is that it provides ready-to-use command templates to build and push an image to the new repository that you just created. 
+
+You use these provided AWS CLI commands in the next steps. In the message window at the top of the page, choose View push commands. A pop-up window titled Push commands for mb-repo opens. This window lists four AWS CLI commands that are customized for the mb-repo and purposely built to do the following:
+
+<ol>
+<li>Authenticate your Docker client to your Amazon ECR registry.</li>
+<li>Build your Docker image.</li>
+<li>Tag your Docker image.</li>
+<li>Push you Docker image to the repository.</li>
+</ol>
+
+Notice also that the pop-up window offers two versions of the commands: macOS/Linux and Windows. Make sure that the macOS/Linux tab is selected because you are going to run these commands in your AWS Cloud9 environment.
+
+<img width="542" alt="image" src="https://github.com/user-attachments/assets/4b98efab-7d5a-4d1a-8eef-14eec2835529" />
+
+First, you copy and run the command to log your Docker client in to your registry. In the pop-up window, for the first command, choose the Copy icon to copy it to the clipboard. The command looks like the following:
+            
+            aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 371458831472.dkr.ecr.us-east-1.amazonaws.com
+
+Switch to the Cloud9-IDE - AWS Cloud9 browser tab. Paste the copied command into the left terminal tab, and press Enter to run the command. If the command completes successfully, it returns the message "Login Succeeded." You can ignore the displayed warnings.
+
+<img width="828" alt="image" src="https://github.com/user-attachments/assets/e3e3b7e4-bad3-47f8-bd38-8bff65aadb85" />
+
+Next, you build the Docker image for your application. Note: When a specific terminal tab is not mentioned in an instruction step, use the left terminal tab.
+In the terminal tab, to change the directory to the 2-containerized-monolith folder, enter the following command:
+
+    cd ~/environment/2-containerized-monolith
+
+Switch to the Elastic Container Registry browser tab. In the pop-up window, for the second command, choose the Copy icon to copy it to the clipboard. The command looks like the following: 
+       
+       docker build -t mb-repo .
+
+Note: Make sure to include the period at the end of the command. Switch to the Cloud9-IDE - AWS Cloud9 browser tab. Paste the copied command into the terminal tab, and press Enter to run the command: The build command produces a lot of output as it runs the instructions contained in the application's Docker file. When it is finished, you see the message.. 
+
+<img width="683" alt="image" src="https://github.com/user-attachments/assets/0fc9ed44-e6b9-4f06-be93-be668c7f1abf" />
+
+Next, you tag the image with the repository URI so that it can be pushed to the repository. Switch to the Elastic Container Registry browser tab. In the pop-up window, for the third command, choose the Copy icon to copy it to the clipboard. The command looks like the following:
+       
+      docker tag mb-repo:latest 371458831472.dkr.ecr.us-east-1.amazonaws.com/mb-repo:latest
+
+Switch to the Cloud9-IDE - AWS Cloud9 browser tab. Paste the copied command into the terminal tab, and press Enter to run the command: If the command completed successfully, it does not return anything
+
+<img width="688" alt="image" src="https://github.com/user-attachments/assets/fade1ab7-9dbf-42f5-b3bf-545665e5375d" />
+
+Finally, you push the container image to the application's repository. Switch to the Elastic Container Registry browser tab. In the pop-up window, for the fourth command, choose the Copy icon to copy it to the clipboard. The command looks like the following:
+
+            docker push 371458831472.dkr.ecr.us-east-1.amazonaws.com/mb-repo:latest
+
+<img width="734" alt="image" src="https://github.com/user-attachments/assets/24ab3678-f77f-47e4-bc03-8080fb4db36b" />
+
+Switch to the Cloud9-IDE - AWS Cloud9 browser tab. Paste the copied command into the terminal tab, and press Enter to run the command: The command outputs several messages as each layer of the image is pushed to the repository. Next, you verify that the image was successfully uploaded. Next, you verify that the image was successfully uploaded. Switch to the Elastic Container Registry browser tab. In the Push commands for mb-repo pop-up window, choose Close. In the Private registry > Repositories list, choose mb-repo. In the images list, you see the container image that you pushed, which is identified by the latest tag.
+
+<img width="850" alt="image" src="https://github.com/user-attachments/assets/ed6e0a55-8706-46f7-b055-b474ee17b9a0" />
+
+Next, you record the image URI. In the Images list, next to Copy URI, choose the Copy icon. Paste the value in a text editor. You use it in a subsequent step.
+       
+Great job! You have successfully created a container image for the message board application and pushed it to an Amazon ECR repository.
+
+<h2>Task 4: Deploying the monolith to Amazon ECS</h2>
+
+<h2>Task 4: Deploying the monolith to Amazon ECS</h2>
+In this task, you deploy the containerized monolithic application to an Amazon ECS runtime environment. Specifically, you use Amazon ECS to create a managed cluster of Amazon Elastic Compute Cloud (Amazon EC2) instances on which to deploy your application container image. The cluster is configured as the target group of an Application Load Balancer to provide failover and scalability. The following diagram shows the deployment architecture of the containerized monolithic application. It also displays the resources that you create in this task.
+
+<img width="699" alt="image" src="https://github.com/user-attachments/assets/cfcb7917-02cc-4c0f-9151-002d858faee6" />
+
+In this task, you perform the following steps:
+<ol>
+<li>Create an Amazon ECS cluster.</li>
+<li>Create a task definition for the application container image.</li>
+<li>Deploy the monolithic application as an Amazon ECS service.</li>
+<li>Test the containerized monolithic application.</li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
