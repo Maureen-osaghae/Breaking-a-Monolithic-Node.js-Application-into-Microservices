@@ -520,8 +520,6 @@ Next, you record the image URI. In the Images list, next to Copy URI, choose the
 Great job! You have successfully created a container image for the message board application and pushed it to an Amazon ECR repository.
 
 <h2>Task 4: Deploying the monolith to Amazon ECS</h2>
-
-<h2>Task 4: Deploying the monolith to Amazon ECS</h2>
 In this task, you deploy the containerized monolithic application to an Amazon ECS runtime environment. Specifically, you use Amazon ECS to create a managed cluster of Amazon Elastic Compute Cloud (Amazon EC2) instances on which to deploy your application container image. The cluster is configured as the target group of an Application Load Balancer to provide failover and scalability. The following diagram shows the deployment architecture of the containerized monolithic application. It also displays the resources that you create in this task.
 
 <img width="699" alt="image" src="https://github.com/user-attachments/assets/cfcb7917-02cc-4c0f-9151-002d858faee6" />
@@ -533,6 +531,135 @@ In this task, you perform the following steps:
 <li>Deploy the monolithic application as an Amazon ECS service.</li>
 <li>Test the containerized monolithic application.</li>
 </ol>
+
+<h2>Task 4.1: Creating an Amazon ECS cluster</h2>
+An Amazon ECS cluster is a logical grouping of EC2 instances on which you can run tasks or services representing your containerized application. In this sub-task, you create an Amazon ECS cluster by using the Amazon ECS console. The console's cluster creation wizard facilitates the creation of all of the infrastructure components needed to create the Amazon ECS cluster environment, including the virtual private cloud (VPC), subnets, security groups, internet gateway, and AWS Identity and Access Management (IAM) roles. On the AWS Management Console, in the search box, enter and select Elastic Container Service 
+
+<img width="935" alt="image" src="https://github.com/user-attachments/assets/d799e780-7495-49ca-9a4b-a5ae0bcc343a" />
+
+ From the left menu, choose Clusters. Choose Create cluster, and configure the following options:
+<ol>
+<li>In the Cluster configuration section, for the Cluster name, enter mb-ecs-cluster</li>
+<li>In the Infrastructure section, select Amazon EC2 instances, and configure the following options:</li>
+<li>Leave the Auto Scaling group (ASG) settings at defaults.</li>
+</ol>
+
+<img width="959" alt="image" src="https://github.com/user-attachments/assets/83fb75ab-2d23-4617-b3e9-f605fa615d4d" />
+
+ ▪  For Operating system/Architecture, choose Amazon Linux 2023.
+              
+ ▪  For EC2 instance type, choose t2.medium.
+
+ <img width="959" alt="image" src="https://github.com/user-attachments/assets/4c50c076-8350-4c08-9348-1dffb9fe890c" />
+
+ ▪  For Desired capacity, for Minimum and Maximum, enter 2
+
+ <img width="949" alt="image" src="https://github.com/user-attachments/assets/3441a52a-cf19-4486-b00b-59701f1c7ae4" />
+
+ ◦ In the Network settings for Amazon EC2 instances, configure the following options:
+          
+ ▪  VPC: choose Lab VPC.
+              
+ ▪  Subnets: Reconfirm that, all public subnets chosen.
+
+ <img width="959" alt="image" src="https://github.com/user-attachments/assets/c4254260-c6ee-4a45-ba6c-9b250150082c" />
+
+▪ Security group: Choose Use an existing security group.
+              
+▪ Security group name dropdown list, select the security group that has ECSSG in the name.
+              
+▪ Clear the default security group.         
+
+ <img width="953" alt="image" src="https://github.com/user-attachments/assets/0530040b-3041-469a-be53-7254431e1c58" />
+
+ Choose Create.
+
+ It takes a few minutes for the cluster to be created. Choose the cluster you created, e.g. mb-ecs-cluster. The details page for mb-ecs-cluster is displayed. Notice that the Status shows a value of Active.
+
+ <img width="919" alt="image" src="https://github.com/user-attachments/assets/2165fee0-401b-4344-8b06-07e46bcc95d4" />
+
+ <img width="953" alt="image" src="https://github.com/user-attachments/assets/5a872262-1792-4374-a9e0-9106a4862fec" />
+
+ Choose the Infrastructure tab.
+
+ The Container instances pane shows that two EC2 instances for the cluster were created.
+
+ <img width="900" alt="image" src="https://github.com/user-attachments/assets/74dadb88-7dff-42c0-b526-8917a2707766" />
+
+ <h3>Task 4.2: Creating a task definition for the application container image</h3>
+A task definition is a list of configuration settings for how to run a Docker container on Amazon ECS. The following are examples of the information that a task definition provides to Amazon ECS:
+<ol>
+<li>Which container image to run</li>
+<li>How much CPU and memory the container needs</li>
+<li>On which ports the container listens to traffic</li>
+</ol>
+
+In this sub-task, you create a task definition for the container image of the message board application. On the Amazon ECS console, from the left menu, choose Task definitions.
+Choose Create new task definition, and configure the following options:
+
+• In the Task definition configuration section, for Task definition family, enter mb-task
+    
+• In the Infrastructure requirements, select Amazon EC2 instances, and clear AWS Fargate.
+
+<img width="825" alt="image" src="https://github.com/user-attachments/assets/816ea704-a961-4f76-be8c-e840d9cb64b7" />
+
+◦  For the Task size, choose CPU: .5vCPU, Memory: 1GB
+
+◦  For Task execution role, choose Create new role.
+
+<img width="839" alt="image" src="https://github.com/user-attachments/assets/f497ef33-365c-4ff8-b769-aeee74fff3e4" />
+
+ ◦ In the Container - 1 section, configure the following options:
+            
+▪ For Container details, for Name, enter mb-container
+           
+▪ For Image URI, paste the URI of the users container image that you copied to a text editor earlier.
+           
+▪ For Port mappings, for Container port, enter 3000. This option specifies the port on which the container receives requests.
+
+<img width="873" alt="image" src="https://github.com/user-attachments/assets/dd347024-4d94-4c8f-a8a4-627d42ff1a1d" />
+
+Choose create
+A message is displayed at the top that says, "Task definition successfully created." You now have a task definition that tells Amazon ECS how to deploy your application container across the cluster.
+
+<img width="842" alt="image" src="https://github.com/user-attachments/assets/a1ddd904-8e82-48a0-98a5-b1fbdf26fc52" />
+
+<h3>Task 4.3: Creating and deploying the service</h3>
+All of the required Amazon ECS infrastructure components are created, and you can now deploy the containerized monolithic application to the cluster as an Amazon ECS service.
+You can use Amazon ECS to run and maintain a specified number of instances of a task definition simultaneously in an Amazon ECS cluster. If one of the tasks fails or stops for any reason, the Amazon ECS service scheduler launches another instance of the task definition to replace it and maintains the desired number of tasks specified in the service.
+In this sub-task, you use the Amazon ECS console to create an Amazon ECS service for the message board application's task definition. On the same screen where you created mb-task, choose Deploy, then choose Create service. In the Environment section, configure the following options:
+
+• For Compute options, choose Launch type.
+    
+• For Launch type, choose EC2.
+
+<img width="781" alt="image" src="https://github.com/user-attachments/assets/c454e194-c1c1-4988-a0cb-15aa28e706fd" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+ 
+
+
+
+
+
+
+
 
 
 
