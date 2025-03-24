@@ -728,6 +728,509 @@ Expand the posts, threads, and users sub-folders.
 
 <img width="602" alt="image" src="https://github.com/user-attachments/assets/314b245a-0ff8-43ce-885f-8f04bb7b5e60" />
 
+Notice that each sub-folder contains a copy of the same application files as those of the containerized monolith application. In fact, the db.json, Dockerfile, and package.json files in each sub-folder are identical to their containerized monolith counterparts. The only file that changed as a result of the re-factoring is server.js. In the posts sub-folder, double-click server.js to open it in an editor tab. The difference from the containerized monolith version is that the program defines only the RESTful API methods and implementation related to the posts resource paths (lines 13–21).
+
+<img width="499" alt="image" src="https://github.com/user-attachments/assets/ae2b778d-5a60-47cd-8fa9-c580cd209f50" />
+
+In the threads sub-folder, double-click server.js to open it in an editor tab. The difference from the containerized monolith version is that the program defines only the RESTful API methods and implementation related to the threads resource paths (lines 13–20).
+
+<img width="554" alt="image" src="https://github.com/user-attachments/assets/8e495788-90e0-4fd3-b7b7-75746080b8ec" />
+
+In the users sub-folder, double-click server.js to open it in an editor tab. The difference from the containerized monolith version is that the program defines only the RESTful API methods and implementation related to the users resource paths (lines 13–20).
+
+<img width="513" alt="image" src="https://github.com/user-attachments/assets/eb77b932-4b3c-453c-9b54-ede3b5da48bb" />
+
+In summary, the only change required to refactor the application was to split the RESTful API method handlers in the monolithic version of server.js into three separate server.js files. Each separate server.js file contains a relevant subset of the API method handlers. 
+
+<h3>Task 5.2: Provisioning an ECR repository for each microservice</h3>
+Similarly to what you did for the containerized monolith version, you create an Amazon ECR repository for each of the application's microservices.
+In this task, you create a repository for the users, threads, and posts microservice container images.
+
+On the AWS Management Console, in the search box, enter and choose Elastic Container Registry. From the menu on the left, choose Repositories, then choose Create repository.
+       
+For Repository name, enter mb-users-repo
+       
+Note: Ensure that under Visibility settings, Private is chosen. Choose Create repository. 
+
+A message is displayed at the top of the page indicating that the repository was successfully created. Repeat the steps in this sub-task to create a repository named mb-threads-repo for the threads microservice container image. Repeat the steps in this sub-task to create a repository named mb-posts-repo for the posts microservice container image.
+When you have created the repositories for all three microservices, the Private registry > Repositories list looks like the following:
+
+<img width="849" alt="image" src="https://github.com/user-attachments/assets/71ee81ee-6b95-482b-84d8-8a9a40c15cef" />
+
+<h3>Task 5.3: Building and pushing the images for each microservice</h3>
+Next, you build each microservice container image and push it to its corresponding repository. In this sub-task, you use the ready-to-use commands provided by the Amazon ECR console to facilitate the task.
+
+<h4>Task 5.3.1: Building and pushing the image for the users microservice</h4>
+Switch to the Cloud9-IDE - AWS Cloud9 browser tab. In the terminal tab, to change directory to the 3-containerized-microservices/users folder, enter the following command:
+
+            cd ~/environment/3-containerized-microservices/users
+
+Switch to the Elastic Container Registry browser tab. From the Private repositories list, choose mb-users-repo. At the top of the page, choose View push commands. A pop-up window titled Push commands for mb-users-repo opens. Next, you build the Docker image for the microservice.
+
+<img width="541" alt="image" src="https://github.com/user-attachments/assets/21b70111-df5f-4c18-814c-457e8e71d6c1" />
+
+ In the pop-up window, for the second command, choose the Copy icon to copy it to the clipboard. The command looks like the following:
+
+      docker build -t mb-users-repo .
+
+Note: Make sure to include the period at the end of the command. Run the copied command in the AWS Cloud9 terminal. When the command is finished, you see the messages similar to "Building 5.1s (9/9) FINISHED."
+
+<img width="560" alt="image" src="https://github.com/user-attachments/assets/834da199-f471-4c0f-b978-962a0048bcf6" />
+
+Next, you tag the image with the repository URI so that it can be pushed to the repository. Switch to the Elastic Container Registry browser tab. In the pop-up window, for the third command, choose the Copy icon to copy it to the clipboard. The command looks like the following:
+
+      docker tag mb-users-repo:latest 371458831472.dkr.ecr.us-east-1.amazonaws.com/mb-users-repo:latest
+
+Run the copied command in the AWS Cloud9 terminal. The command returns to the prompt. Finally, you push the container image to the microservice's repository.
+Switch to the Elastic Container Registry browser tab. In the pop-up window, for the fourth command, choose the Copy icon to copy it to the clipboard. The command looks like the following:
+
+      docker push 371458831472.dkr.ecr.us-east-1.amazonaws.com/mb-users-repo:latest
+
+<img width="725" alt="image" src="https://github.com/user-attachments/assets/41e222b1-027b-4297-8085-791c9c4d2472" />
+
+Switch to the Cloud9-IDE - AWS Cloud9 browser tab. Run the copied command in the AWS Cloud9 terminal. The command outputs several messages as each layer of the image is pushed to the repository. Next, you verify that the image was successfully uploaded.
+
+Switch to the Elastic Container Registry browser tab. In the Push commands for mb-users-repo pop-up box, choose Close. Choose Refresh. In the Images list, you see the container image that you pushed, which is identified by the latest tag. Next, you record the image URI. 
+
+<img width="827" alt="image" src="https://github.com/user-attachments/assets/6a16c597-c701-476f-90fe-a3fb89c4a7f2" />
+
+In the Images list, choose Copy URI for the Image URI of the latest version of the image. Paste the value into a text editor, and label it as the users image URI. You use it in a later step.
+Next, you build and push the container image for the threads microservice.
+
+<h4>Task 5.3.2: Building and pushing the image for the threads microservice</h4>
+In this sub-task, you use the following information and repeat the previous the steps in the previous task to build and push the image for the threads microservice.
+       On the Cloud9-IDE - AWS Cloud9 tab, to change the directory to the 3-containerized-microservices/threads folder, enter the following command:
+Switch to the Elastic Container Registry browser tab.
+       In the left navigation, choose Repositories, and choose mb-threads-repo.
+       At the top of the page, choose View push commands. 
+       A pop-up window titled Push commands for mb-threads-repo opens.
+       Repeat the steps from the previous task to do the following:
+          Build the Docker image for the microservice.
+
+<img width="574" alt="image" src="https://github.com/user-attachments/assets/b60fbc85-fca0-47d2-86ab-0f40f46aef28" />
+
+Tag the image with the repository URI so that it can be pushed to the repository. 
+
+Push the container image to the microservice's repository.
+
+<img width="763" alt="image" src="https://github.com/user-attachments/assets/d2506ce1-e86d-40c2-aa90-0f1588b83118" />
+
+       After you have completed these steps for the threads microservice, you verify that the image was successfully uploaded.
+In the Push commands for mb-threads-repo pop-up box, choose Close.
+       Choose Refresh. 
+       In the Images list, you see the container image that you pushed, which is identified by the latest tag.
+
+<img width="857" alt="image" src="https://github.com/user-attachments/assets/211ef7b4-9e12-4f23-9a51-8ae88c09e34d" />
+
+Next, you record the image URI. In the Images list, choose Copy URI for the Image URI of the latest version of the image. Paste the value into a text editor, and label it as the threads image URI. You use it in a later step. Next, you build and push the container image for the posts microservice.
+
+<h4>Task 5.3.3: Building and pushing the image for the posts microservice</h4>
+In this sub-task, you use the following information and repeat the previous the steps in the previous task to build and push the image for the posts microservice. On the Cloud9-IDE - AWS Cloud9 tab, to change the directory to the 3-containerized-microservices/posts folder, enter the following command:
+
+      cd ~/environment/3-containerized-microservices/posts
+
+Switch to the Elastic Container Registry browser tab.
+
+In the left navigation, choose Repositories, and choose mb-posts-repo.
+At the top of the page, choose View push commands. A pop-up window titled Push commands for mb-posts-repo opens. Repeat the steps from the previous task to do the following:
+
+◦ Build the Docker image for the microservice.
+
+<img width="578" alt="image" src="https://github.com/user-attachments/assets/87d1a0c2-d27b-4c43-96f9-c230508ebd21" />
+
+◦ Tag the image with the repository URI so that it can be pushed to the repository. 
+        
+◦ Push the container image to the microservice's repository.
+
+<img width="680" alt="image" src="https://github.com/user-attachments/assets/57bad816-182c-4fc7-acb1-71291e89c4f5" />
+
+After you have completed these steps for the posts microservice, you verify that the image was successfully uploaded. Switch to the Elastic Container Registry browser tab.
+ In the Push commands for mb-posts-repo pop-up box, choose Close. Choose Refresh. In the Images list, you see the container image that you pushed, which is identified by the latest tag. Next, you record the image URI. 
+
+ <img width="948" alt="image" src="https://github.com/user-attachments/assets/e75fbce7-3c0e-44ca-b329-210e8ab15d7f" />
+
+In the Images list, choose Copy URI for the Image URI of the latest version of the image. Paste the value into a text editor, and label it as the posts image URI. You use it in a later step.
+You have successfully built container images for the microservices in your application and pushed them to Amazon ECR.
+
+ <h3>Task 6: Deploying the containerized microservices</h3>
+
+In this task, you deploy the containerized microservices message board application to the same ECS cluster that you used for the containerized monolith. You also use the same Application Load Balancer that you used in previous tasks, but you configure it to route requests to different target groups (one for each microservice container) based on the request URI path.
+The following diagram shows the deployment architecture of the containerized microservices application. It also displays the resources that you create in this task.
+
+<img width="694" alt="image" src="https://github.com/user-attachments/assets/0ee79a26-f677-4f21-a4a3-9ca6582d7c69" />
+
+<h3>In this task, you perform the following steps:</h3>
+
+• Create a task definition for each microservice.
+      
+• Deploy the microservices as Amazon ECS services.
+      
+• Validate the deployment.
+
+ <h4>Task 6.1: Creating a task definition for each microservice</h4>
+Because the microservices in the application are intended to run independently of each other, they require their own task definition. In this sub-task, you create three task definitions that run the container image of each individual microservice. 
+
+<h4>Task 6.1.1: Creating a task definition for the users microservice</h4>
+
+On the AWS Management Console, in the search box, enter and select Elastic Container Service In the left navigation pane, choose Task definitions
+Choose Create new task definition, and configure the following options:
+
+• In the Task definition configuration section, for Task definition family, enter mb-users-task
+      
+• In the Infrastructure requirements, select Amazon EC2 instances, and clear AWS Fargate.
+<img width="544" alt="image" src="https://github.com/user-attachments/assets/0fe0a97d-fc20-4127-9bde-4a0f6893b11f" />
+For the Task size, choose CPU: .5 vCPU, Memory: 1GB
+<img width="770" alt="image" src="https://github.com/user-attachments/assets/8b91d49d-6f0f-4cfa-9181-a4561d22a5cc" />
+
+<h5>In the Container - 1 section, configure the following options:</h5>
+<ol>
+<li>For Container details, for Name, enter mb-users-container</li>
+<li>For Image URI, paste the URI of the users container image that you copied to a text editor earlier.</li>
+<li>For Port mappings, for Container port, enter 3000. This option specifies the port on which the container receives requests.</li>
+</ol>
+
+<img width="781" alt="image" src="https://github.com/user-attachments/assets/c9a325b4-e0b6-440b-b748-d8568c42456e" />
+Choose Create.
+A message is displayed at the top that says, "Task definition successfully created."
+<img width="744" alt="image" src="https://github.com/user-attachments/assets/5850597e-7c05-4a69-a27c-189d4bfb5fa3" />
+<h5>Task 6.1.2: Creating a task definition for the posts microservice</h5>
+In the left navigation pane, choose Task definitions. Choose Create new task definition, and configure the following options: In the Task definition configuration section, for Task definition family, enter mb-posts-task
+
+<img width="772" alt="image" src="https://github.com/user-attachments/assets/30801689-4330-46ff-95fd-39ada8a80648" />
+<ol>
+<li>For the Task size, choose CPU: .5 vCPU, Memory: 1GB</li>
+<li>For Container - 1, configure the following options:</li>
+<li>For Container details, for Name, enter mb-posts-container</li>
+<li>For Image URI, paste the URI of the posts container image that you copied to a text editor earlier.</li>
+</ol>
+<img width="747" alt="image" src="https://github.com/user-attachments/assets/55bc20ed-42e9-4592-b472-4fbea9bd3383" />
+For Port mappings, for Container port, enter 3000. This option specifies the port on which the container receives requests.
+<img width="754" alt="image" src="https://github.com/user-attachments/assets/7a61d211-ab75-454d-8bfe-f39047462a52" />
+Choose Create.
+A message is displayed at the top that says, "Task definition successfully created."
+<img width="738" alt="image" src="https://github.com/user-attachments/assets/2dfb7bd3-d73e-436f-bab1-098a3cb46ebc" />
+<h5>Task 6.1.3: Creating a task definition for the threads microservice</h5> 
+In the left navigation pane, choose Task definitions. Choose Create new task definition, and configure the following options: In the Task definition configuration section, for Task definition family, enter mb-threads-task
+<img width="770" alt="image" src="https://github.com/user-attachments/assets/b5ee7680-9f9a-4519-816f-4e191d5df65a" />
+<ol>
+<li>For the Task size, choose CPU: .5 vCPU, Memory: 1GB</li>
+<li>For Container - 1, configure the following options:</li>
+<li>For Container details, for Name, enter mb-threads-container</li>
+<li>For Image URI, paste the URI of the threads container image that you copied to a text editor earlier.</li>
+<li>For Port mappings, for Container port, enter 3000. This option specifies the port on which the container receives requests.</li>
+</ol>
+<img width="755" alt="image" src="https://github.com/user-attachments/assets/b4a510dd-0df5-403b-a24b-292f6f2c5467" />
+Choose Create. A message is displayed at the top that says, "Task definition successfully created."
+<img width="772" alt="image" src="https://github.com/user-attachments/assets/c9d361f9-baad-4c33-970f-710c59c16fa5" />
+<img width="782" alt="image" src="https://github.com/user-attachments/assets/8c1bcc78-1cdf-458a-a9ad-92a885dc79b4" />
+
+<h4>Task 6.2: Creating and deploying the services</h4>
+All of the required Amazon ECS infrastructure components are created, and you can now deploy the containerized monolithic application to the cluster as an Amazon ECS service.
+You can use Amazon ECS to run and maintain a specified number of instances of a task definition simultaneously in an Amazon ECS cluster. If one of the tasks fails or stops for any reason, the Amazon ECS service scheduler launches another instance of the task definition to replace it and maintains the desired number of tasks specified in the service.
+In this sub-task, you use the Amazon ECS console to create an Amazon ECS service for the message board application's task definition.
+In the left navigation pane, choose Clusters, and choose your mb-ecs-cluster cluster. On the Services tab, choose Create, and configure the following options:
+In the Environment section, configure the following options:
+
+◦ For Compute options, choose Launch type.
+       
+◦ For Launch type, choose EC2.
+
+<img width="783" alt="image" src="https://github.com/user-attachments/assets/9770d0da-a9e9-4dea-96ad-455e36af0c1b" />
+
+In the Deployment configuration section, configure the following options: 
+◦ For Application type, choose Service.
+
+◦ For Family, chose mb-users-task. 
+
+◦ For Service name, enter mb-users-service
+
+<img width="748" alt="image" src="https://github.com/user-attachments/assets/e702304c-2472-4554-a0cb-ada9f5597e35" />
+
+Expand the Networking section, and configure the following options:
+◦ For Security group, choose Use an existing security group.
+
+◦ From the Security group name dropdown list, select the security group that has ECSSG in the name.
+
+◦ Clear the default security group.
+<img width="769" alt="image" src="https://github.com/user-attachments/assets/ae51c077-891b-42e6-8e40-77cc2179709d" />
+
+ Expand the Load balancing - optional section, and configure the following options:
+ 
+• For Load balancer type, choose Application Load Balancer.
+    
+• For Application Load Balancer, choose Use an existing load balancer.
+    
+ • For Load balancer, choose mb-load-balancer.
+
+ <img width="766" alt="image" src="https://github.com/user-attachments/assets/ff901887-7d1c-4ce5-86f9-fd1440a64fa4" />
+
+ For Listener, choose Use an existing listener, and then choose 80:HTTP from the dropdown list.
+
+ <img width="748" alt="image" src="https://github.com/user-attachments/assets/f538aca0-5fe7-4b71-84d8-98faf4f7dbf6" />
+
+• For Target group, choose Create new target group.
+
+• For Target group name, enter mb-users-target
+
+• For Path pattern, enter /api/users*
+
+• For Evaluation order, enter 1
+
+<img width="746" alt="image" src="https://github.com/user-attachments/assets/8d7e23f2-eb27-4a6c-ba42-1a54c3b11002" />
+
+Choose Create.
+
+Wait a few minutes for the service to create all the components.
+
+<img width="781" alt="image" src="https://github.com/user-attachments/assets/3e288d3b-9932-495a-b07c-351d344b0a78" />
+
+Return to your mb-ecs-cluster cluster. On the Services tab, choose Create, and configure the following options:
+
+<ol>
+<li>In the Environment section, configure the following options:</li>
+<li>For Compute options, choose Launch type.</li>
+<li>For Launch type, choose EC2.</li>
+<li>In the Deployment configuration section, configure the following options: </li>
+<li>For Application type, choose Service.</li>
+<li>For Family, choose mb-posts-task.</li>
+<li>For Service Name, enter mb-posts-service</li>
+</ol>
+
+<img width="799" alt="image" src="https://github.com/user-attachments/assets/a66082d7-9a6b-487a-8476-1ac5ccee2e2d" />
+
+Expand the Networking section, and configure the following options:
+
+◦ For Security group, choose Use an existing security group.
+
+◦ From the Security group name dropdown list, select the security group that has ECSSG in the name.
+
+◦ Clear the default security group.
+   
+ Expand the Load balancing section, and configure the following options:
+
+◦ For Load balancer type, choose Application Load Balancer.
+
+◦ For Application Load Balancer, choose Use an existing load balancer.
+
+◦ For Load balancer, choose mb-load-balancer.
+
+◦ For Listener, choose Use an existing listener, and then choose 80:HTTP from the dropdown list.
+
+◦ For Target group, choose Create new target group.
+
+◦ For Target group name, enter mb-posts-target
+
+◦ For Path pattern, enter /api/posts*
+
+◦ For Evaluation order, enter 2
+
+<img width="763" alt="image" src="https://github.com/user-attachments/assets/0ec5f541-2276-4093-81b5-eafad316a5b6" />
+
+Choose Create
+
+<img width="834" alt="image" src="https://github.com/user-attachments/assets/e5ff44a9-2b52-4dfe-9354-4f1463db6c30" />
+
+Wait a few minutes for the service to create all the components.
+Return to your mb-ecs-cluster cluster. On the Services tab, choose Create, and configure the following options:
+
+In the Environment section, configure the following options:
+       
+◦ For Compute options, choose Launch type.
+
+◦ For Launch type, choose EC2.
+
+<img width="782" alt="image" src="https://github.com/user-attachments/assets/b56293c6-83be-4b10-95c9-b1531673fbe1" />
+
+ In the Deployment configuration section, configure the following options: 
+
+◦ For Application type, choose Service.
+
+◦ For Family, choose mb-threads-task.
+
+◦ For Service Name, enter mb-threads-service
+
+<img width="838" alt="image" src="https://github.com/user-attachments/assets/bf984cb1-b246-4e31-8353-6a1099fc4293" />
+
+Expand the Networking section, and configure the following options:
+
+◦ For Security group, choose Use an existing security group.
+
+◦ From the Security group name dropdown list, select the security group that has ECSSG in the name.
+
+Clear the default security group.
+
+Expand the Load balancing section, and configure the following options:
+
+◦ For Load balancer type, choose Application Load Balancer.
+
+◦ For Application Load Balancer, choose Use an existing load balancer.
+
+◦ For Load balancer, choose mb-load-balancer.
+
+<img width="809" alt="image" src="https://github.com/user-attachments/assets/ba99f931-98f6-49cd-ab13-a0d3bb430e8d" />
+
+For Listener, choose Use an existing listener, and then choose 80:HTTP from the dropdown list.
+        
+◦ For Target group, choose Create new target group.
+        
+◦ For Target group name, enter mb-threads-target
+        
+◦ For Path pattern, enter /api/threads*
+        
+◦ For Evaluation order, enter 3
+
+<img width="889" alt="image" src="https://github.com/user-attachments/assets/65bcc3a9-cec5-49ea-869d-223bc3388423" />
+
+Choose Create.
+       
+Wait a few minutes for the service to create all the components.
+
+<img width="839" alt="image" src="https://github.com/user-attachments/assets/082e1e54-cfc7-4752-ac9d-53820b28586e" />
+
+Return to the Clusters menu on the ECS console, and choose mb-ecs-cluster. On the Services menu, choose any service you created, go to view load balancer. For mb-load-balancer, on the Listeners and rules tab, choose HTTP:80. Under the Listener rules notice the rules similar to the following:
+
+<img width="844" alt="image" src="https://github.com/user-attachments/assets/60882b69-3d4e-4d81-ac18-9f7334a175dd" />
+
+Notice that the requests are forwarded to the respective groups, and a default rule forwards the request to the mb-target that was created before refactoring. You modify this rule provide a different "Invalid request~.." message in case the requests do not match the desired URL path. 
+
+Choose the Default rule, then choose Actions and Edit rule.
+       
+Under the Routing actions, choose Forward to target groups.
+       
+For Target group choose mb-users-target.
+
+<img width="959" alt="image" src="https://github.com/user-attachments/assets/0e391606-7aa1-4f56-ad06-610f3ac7a887" />
+
+Choose Save changes.
+
+Notice the new rules as per following, all requests are routed to mb-users-target if request parameters are not specified. 
+
+<img width="828" alt="image" src="https://github.com/user-attachments/assets/96350b2f-bb89-4495-a344-3f04ccb3e677" />
+
+eturn to the Clusters menu on the ECS console, and choose mb-ecs-cluster.
+
+On the Services tab, select mb-ecs-service, and choose Update.
+       
+On the Update mb-ecs-service page, for Desired tasks, enter 0
+      
+Choose Update.
+
+<img width="803" alt="image" src="https://github.com/user-attachments/assets/28771a87-2b84-478c-947e-eff4cdddce07" />
+
+he service should not be running any tasks now. The original monolithic container has been stopped, and all requests will be serviced by three services individually.
+On the Amazon ECS browser tab, return to your mb-ecs-cluster cluster. Notice the services and tasks that are running.
+<img width="757" alt="image" src="https://github.com/user-attachments/assets/75ec6c65-af63-47b1-a44f-25610190b9a0" />
+
+<h3>Task 6.3: Validating the deployment</h3>
+You can now test the RESTful API methods of the message board application from a web browser and validate that the microservices-based implementation works correctly.
+Before testing, shut down the Amazon ECS service for the containerized monolith version of the application. Make sure that it will no longer serve any requests. Open a new browser tab. In the address field, enter the load balancer DNS name that you pasted into a text editor earlier, and press Enter. A page is returned with a message that says, "Ready to receive requests."
+
+<img width="537" alt="image" src="https://github.com/user-attachments/assets/b9cbd61b-850e-4e59-aea5-13ee1329a778" />
+
+This is the message that the application returns when no resource path is included in the GET request. Recall from the listener rules configuration that this type of request is sent for processing to the users microservice. In the browser address bar, to the end of the URL, add /api and press Enter.
+       
+The message "API ready to receive requests" is returned by the application, specifically the users microservice.
+
+<img width="562" alt="image" src="https://github.com/user-attachments/assets/adc47145-0fca-4dae-938b-8d54694b06e5" />
+
+Next, you test additional URLs. In the browser address bar, enter the following addresses in the browser tab, and examine the results. For each address, replace DNS name wit the DNS name that you copied to a text editor earlier. DNS name/api/users 
+
+Expected output: List of users 
+
+<img width="944" alt="image" src="https://github.com/user-attachments/assets/a7e253cc-5655-4b2f-b7da-54b8f0fde0fc" />
+
+DNS name/api/users/2 
+
+Expected output: Details of user 2
+
+<img width="554" alt="image" src="https://github.com/user-attachments/assets/1146842e-4664-40ad-ac77-6670e893fbfa" />
+
+DNS name/api/threads 
+Expected output: List of threads
+
+<img width="959" alt="image" src="https://github.com/user-attachments/assets/85ce8bb9-dea6-4b63-bf9d-b6612e04ab13" />
+
+• DNS name/api/posts/in-thread/2
+
+Expected output: Details of thread 2 
+
+<img width="575" alt="image" src="https://github.com/user-attachments/assets/e4ffd71a-8925-4e1f-9fd3-8f3d24e2dcd5" />
+
+ • DNS name/xxx
+      Expected output: Not found (invalid request)
+<img width="533" alt="image" src="https://github.com/user-attachments/assets/3b6b8f7b-f17e-443f-a77e-03bc8bc6b806" />
+
+<h2>Conclusion</h2>
+Congratulations! You now have successfully done the following:
+
+• Migrated a monolithic Node.js application to run in a Docker container
+    
+• Refactored a Node.js application from a monolithic design to a microservices architecture
+    
+• Deployed a containerized Node.js microservices application to Amazon ECS
+
+© 2023, Amazon Web Services, Inc. or its affiliates. All rights reserved. This work may not be reproduced or redistributed, in whole or in part, without prior written permission from Amazon Web Services, Inc. Commercial copying, lending, or selling is prohibited. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
