@@ -635,6 +635,111 @@ In this sub-task, you use the Amazon ECS console to create an Amazon ECS service
 
 <img width="781" alt="image" src="https://github.com/user-attachments/assets/c454e194-c1c1-4988-a0cb-15aa28e706fd" />
 
+For Service name choose mb-ecs-service
+
+<img width="818" alt="image" src="https://github.com/user-attachments/assets/11919ab4-dea3-4308-8677-b73f768107d4" />
+
+• Expand the Networking section, and configure the following options:
+      
+◦ For Security group, choose Use an existing security group.
+          
+◦ From the Security group name dropdown list, select the security group that has ECSSG in the name.
+          
+◦ Clear the default security group.
+
+ <img width="791" alt="image" src="https://github.com/user-attachments/assets/80853e5e-8d66-42c0-b956-7df5350d43f7" />
+
+• Expand the Load balancing - optional section, and configure the following options:
+      
+◦ For Load balancer type, choose Application Load Balancer.
+          
+◦ For Application Load Balancer, choose Create a new load balancer.
+
+◦ For Load balancer name, enter mb-load-balancer
+
+<img width="781" alt="image" src="https://github.com/user-attachments/assets/d7cf8856-9c8f-4c00-ae41-bb9f0873744e" />
+
+ For Target group name, enter mb-target
+
+ <img width="788" alt="image" src="https://github.com/user-attachments/assets/e6fdf6d1-ef50-4a09-8f17-76fc542b7013" />
+
+Choose Create.
+
+Wait for a few minutes for the service to create all the components. From the Services list, choose the service that you just created, mb-ecs-service. It should show a Status of Active with one Task that's Running.
+
+<img width="835" alt="image" src="https://github.com/user-attachments/assets/bd75eaaf-b8bd-4626-8081-1d12436e9d72" />
+
+In the Status section, choose View load balancer. Copy the DNS name for the load balancer, and paste it into a new browser tab.
+
+<img width="781" alt="image" src="https://github.com/user-attachments/assets/3251ede3-ba5e-4ae8-b120-49bc338d7026" />
+
+The browser page should display a message that says, "Ready to receive requests."
+
+<img width="694" alt="image" src="https://github.com/user-attachments/assets/38fe649d-54e8-49e7-aad8-3f9f60fc9f45" />
+
+You have successfully deployed the containerized monolith as an Amazon ECS service into the cluster. Also paste the DNS name into a text editor. You use it later in this lab.
+
+<h3>Task 4.4: Testing the containerized monolith</h3>
+You can now validate your deployment by testing the RESTful API methods of the message board application from a web browser.
+You need the DNS name of the load balancer that you used in the previous steps. Open a new browser tab, paste the DNS name into the address field, and press Enter. Enter the following addresses in the browser tab, and examine the results. For each address, replace DNS name with the DNS name from the previous steps.
+
+• DNS name/api
+      
+• DNS name/api/users
+
+
+<img width="949" alt="image" src="https://github.com/user-attachments/assets/bdec7754-6b04-4688-bad7-e1b2a7f5782a" />
+
+• DNS name/api/threads
+
+<img width="959" alt="image" src="https://github.com/user-attachments/assets/910a2bd9-7998-4d05-a148-57bb13b5a418" />
+
+DNS name/api/posts/in-thread/2 
+
+<img width="959" alt="image" src="https://github.com/user-attachments/assets/b6a22d2e-892f-468f-9a61-505f8e61823b" />
+
+The returned results are similar to what you observed while running the application locally in the AWS Cloud9 IDE.
+
+Now that you have containerized the monolith application, you can refactor it.
+
+<h2>Task 5: Refactoring the monolith Application<h2>
+In this task, you break the containerized monolithic message board application into several interconnected services and microservices and push each service's image to an Amazon ECR repository. Each microservice performs a single business capability of the application and can be scaled independently of the other microservices. Specifically, the application is divided into the following microservices, which represent the top-level classes of objects that the application's RESTful API serves:
+<ol>
+<li>Users microservice: A service for all user-related REST paths (/api/users/*)</li>
+<li>Threads microservice: A service for all thread-related REST paths (/api/threads/*)</li>
+<li>Posts microservice: A service for all post-related REST paths (/api/posts/*)</li>
+</ol>
+      
+To expedite the refactoring task, a microservices version of the application is provided to you in the 3-containerized-microservices folder of your AWS Cloud9 environment.
+In this task, you perform the following steps:
+
+• Review the refactored microservices application.
+
+• Provision an Amazon ECR repository for each microservice.
+
+• Build and push the images for each microservice.
+
+<h3>Task 5.1: Reviewing the refactored microservices application</h3>
+Take a few minutes to review the files and understand the changes that were made in order to refactor the application into microservices.
+
+Switch to the Cloud9-IDE - AWS Cloud9 browser tab. In the left pane, expand the 3-containerized-microservices folder. Notice that there are now three separate sub-folders: posts, threads, and users. These folders represent the three application microservices. Each sub-folder contains the implementation files for the corresponding microservice.
+
+Expand the posts, threads, and users sub-folders.
+
+<img width="602" alt="image" src="https://github.com/user-attachments/assets/314b245a-0ff8-43ce-885f-8f04bb7b5e60" />
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
