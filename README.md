@@ -702,7 +702,7 @@ The returned results are similar to what you observed while running the applicat
 
 Now that you have containerized the monolith application, you can refactor it.
 
-<h2>Task 5: Refactoring the monolith Application<h2>
+<h2>Task 5: Refactoring the monolith Application</h2>
 In this task, you break the containerized monolithic message board application into several interconnected services and microservices and push each service's image to an Amazon ECR repository. Each microservice performs a single business capability of the application and can be scaled independently of the other microservices. Specifically, the application is divided into the following microservices, which represent the top-level classes of objects that the application's RESTful API serves:
 <ol>
 <li>Users microservice: A service for all user-related REST paths (/api/users/*)</li>
@@ -909,7 +909,9 @@ For Port mappings, for Container port, enter 3000. This option specifies the por
 Choose Create.
 A message is displayed at the top that says, "Task definition successfully created."
 <img width="738" alt="image" src="https://github.com/user-attachments/assets/2dfb7bd3-d73e-436f-bab1-098a3cb46ebc" />
+
 <h5>Task 6.1.3: Creating a task definition for the threads microservice</h5> 
+
 In the left navigation pane, choose Task definitions. Choose Create new task definition, and configure the following options: In the Task definition configuration section, for Task definition family, enter mb-threads-task
 <img width="770" alt="image" src="https://github.com/user-attachments/assets/b5ee7680-9f9a-4519-816f-4e191d5df65a" />
 <ol>
@@ -1117,7 +1119,7 @@ Choose Update.
 
 <img width="803" alt="image" src="https://github.com/user-attachments/assets/28771a87-2b84-478c-947e-eff4cdddce07" />
 
-he service should not be running any tasks now. The original monolithic container has been stopped, and all requests will be serviced by three services individually.
+The service should not be running any tasks now. The original monolithic container has been stopped, and all requests will be serviced by three services individually.
 On the Amazon ECS browser tab, return to your mb-ecs-cluster cluster. Notice the services and tasks that are running.
 <img width="757" alt="image" src="https://github.com/user-attachments/assets/75ec6c65-af63-47b1-a44f-25610190b9a0" />
 
