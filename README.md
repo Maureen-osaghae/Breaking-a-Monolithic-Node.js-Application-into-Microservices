@@ -522,7 +522,9 @@ Great job! You have successfully created a container image for the message board
 <h2>Task 4: Deploying the monolith to Amazon ECS</h2>
 In this task, you deploy the containerized monolithic application to an Amazon ECS runtime environment. Specifically, you use Amazon ECS to create a managed cluster of Amazon Elastic Compute Cloud (Amazon EC2) instances on which to deploy your application container image. The cluster is configured as the target group of an Application Load Balancer to provide failover and scalability. The following diagram shows the deployment architecture of the containerized monolithic application. It also displays the resources that you create in this task.
 
+
 <img width="699" alt="image" src="https://github.com/user-attachments/assets/cfcb7917-02cc-4c0f-9151-002d858faee6" />
+
 
 In this task, you perform the following steps:
 <ol>
@@ -1109,7 +1111,7 @@ Notice the new rules as per following, all requests are routed to mb-users-targe
 
 <img width="828" alt="image" src="https://github.com/user-attachments/assets/96350b2f-bb89-4495-a344-3f04ccb3e677" />
 
-eturn to the Clusters menu on the ECS console, and choose mb-ecs-cluster.
+Return to the Clusters menu on the ECS console, and choose mb-ecs-cluster.
 
 On the Services tab, select mb-ecs-service, and choose Update.
        
